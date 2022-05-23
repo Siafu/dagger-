@@ -3,6 +3,7 @@ package spectral
 import (
 	"dagger.io/dagger"
 	"dagger.io/dagger/core"
+	"universe.dagger.io/docker"
 )
 
 dagger.#Plan & {
@@ -22,6 +23,8 @@ dagger.#Plan & {
 				source: _data.contents
 				ruleset: filename: "standards.spectral.yaml"
 				documents: ["petstore.yaml"]
+				container: input: _pull.output
+				_pull: docker.#Pull & {source: "stoplight/spectral"}
 			}
 			// Test assertion
 			nMessages: len(lint.logs) & 15
